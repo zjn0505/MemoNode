@@ -28,9 +28,10 @@ exports.create_a_memo = function(req, res) {
 			} else if (unit == "day") {
 				diff = num * 24 * 60 * 60 * 1000;
 			}
+			var expired_on = new Date(new Date().getTime() + diff);
 			var new_memo = new Memo({
 				msg: msg,
-				expired_on: new Date(new Date().getTime() + diff)
+				expired_on: expired_on
 			});
 			new_memo.save(function(err, memo) {
 				if (err)
