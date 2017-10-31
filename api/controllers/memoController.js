@@ -5,6 +5,31 @@ const FAILURE_CODE = 400;
 
 var mongoose = require('mongoose'),
 Memo = mongoose.model('memo');
+var nanoid = require('nanoid/generate');
+
+
+function genUid(callback) {
+	console.log("gen uid start");
+	var uid = nanoid("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", 4);
+	console.log("gen uid " + uid);
+	Memo.findOne({'_id' : uid}, function(err, memo) {
+		if (err == null && memo == null) {
+			console.log("found uid " + uid);
+			callback(uid);
+			return;
+		}
+		console.log("sadly");
+		genUid(callback)
+	});	
+}
+
+function memo(_memo) {
+	this._id = _memo._id;
+	this.msg = _memo.msg;
+	this.access_count = _memo.access_count;
+	this.created_date = _memo.created_date;
+	this.expired_on = _memo.expired_on;
+}
 
 exports.create_a_memo = function(req, res) {
 	var msg = req.body.msg;
@@ -29,70 +54,85 @@ exports.create_a_memo = function(req, res) {
 				diff = num * 24 * 60 * 60 * 1000;
 			}
 			var expired_on = new Date(new Date().getTime() + diff);
+
+			genUid(function(uid) {
+
+				var new_memo = new Memo({
+					msg: msg,
+					_id: uid,
+					expired_on: expired_on
+				});
+				console.log("gen uid finished");
+				new_memo.save(function(err, _memo) {
+					if (err)
+						res.send(err);
+					res.json({
+						result: SUCCESS_CODE,
+						msg : "Succeed",
+						memo: new memo(_memo)
+					});
+				});
+
+			}); 
+		}
+	} else {
+		genUid(function(uid) {
+
 			var new_memo = new Memo({
 				msg: msg,
-				expired_on: expired_on
+				_id: uid
 			});
-			new_memo.save(function(err, memo) {
+			new_memo.save(function(err, _memo) {
 				if (err)
 					res.send(err);
 				res.json({
 					result: SUCCESS_CODE,
-					memoId: memo._id,
-					expired_on: expired_on
+					msg : "Succeed",
+					memo: new memo(_memo)
 				});
 			});
-		}
-	} else {
-		var new_memo = new Memo({msg:msg});
-		new_memo.save(function(err, memo) {
-			if (err)
-				res.send(err);
-			res.json({
-				result: SUCCESS_CODE,
-				memoId: memo._id
-			});
-		});
-	}
 
-	
+		}); 
+		
+	}
 };
 
 exports.read_a_memo = function(req, res) {
-	Memo.findOne({'_id' : req.params.memoId}, function(err, memo) {
+	Memo.findOne({'_id' : req.params.memoId}, function(err, _memo) {
 		if (err)
 			res.send(err);
-		if (memo == null) {
+		if (_memo == null) {
 			res.json({
-					result: FAILURE_CODE,
-					msg: "The memo you query doesn't exist."
-				});
-		} else if (memo.expired_on == null || undefined || "") {
+				result: FAILURE_CODE,
+				msg: "The memo you query doesn't exist."
+			});
+		} else if (_memo.expired_on == null || undefined || "") {
 			// this memo doesn't has a expire date, it is ever-lasting
-			memo.access_count++;
-			memo.save();
+			_memo.access_count++;
+			_memo.save();
 			res.json({
 				result: SUCCESS_CODE,
 				msg: "Succeed",
-				memo: memo
+				memo: new memo(_memo)
 			});
 		} else {
-			if ((memo.expired_on - new Date()) < 0) {
+			if ((_memo.expired_on - new Date()) < 0) {
 				res.json({
 					result: FAILURE_CODE,
 					msg: "The memo you are accessing has expired."
 				});
 			} else {
-				memo.access_count++;
-				memo.save();
+				_memo.access_count++;
+				_memo.save();
 				res.json({
 					result: SUCCESS_CODE,
 					msg: "Succeed",
-					memo: memo
+					memo: new memo(_memo)
 				});
 			}
 		}
-
 		
 	});
 };
+
+

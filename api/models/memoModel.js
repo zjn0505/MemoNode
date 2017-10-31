@@ -1,13 +1,11 @@
 'use strict';
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var shortid = require('shortid');
 
 var MemoSchema = new Schema({
     _id: {
         type: String,
         unique: true,
-        default: shortid.generate
     },
     msg: {
         type: String,
