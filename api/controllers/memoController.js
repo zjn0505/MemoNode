@@ -9,16 +9,12 @@ var nanoid = require('nanoid/generate');
 
 
 function genUid(callback) {
-	console.log("gen uid start");
 	var uid = nanoid("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", 4);
-	console.log("gen uid " + uid);
 	Memo.findOne({'_id' : uid}, function(err, memo) {
 		if (err == null && memo == null) {
-			console.log("found uid " + uid);
 			callback(uid);
 			return;
 		}
-		console.log("sadly");
 		genUid(callback)
 	});	
 }
@@ -29,19 +25,23 @@ function memo(_memo) {
 	this.access_count = _memo.access_count;
 	this.created_date = _memo.created_date;
 	this.expired_on = _memo.expired_on;
+	this.max_access_count = _memo.max_access_count;
 }
 
 exports.create_a_memo = function(req, res) {
 	var msg = req.body.msg;
 	var expired = req.body.expired_on;
+	var max_access = req.body.max_access_count;
 	var regex = /^([1-9][0-9]*)((min)|(hr)|(day))$/;
-
+	var expired_on = null;
+	var expired_after_count = null;
 	if (expired != null && expired != "" && expired != undefined) {
 		if (!regex.test(expired)) {
 			res.send({
 				result: FAILURE_CODE,
 				msg: "Invalid expiring time!"
 			});
+			return;
 		} else {
 			var num = expired.match(regex)[1];
 			var unit = expired.match(regex)[2];
@@ -53,16 +53,30 @@ exports.create_a_memo = function(req, res) {
 			} else if (unit == "day") {
 				diff = num * 24 * 60 * 60 * 1000;
 			}
-			var expired_on = new Date(new Date().getTime() + diff);
+			expired_on = new Date(new Date().getTime() + diff);
+		}
+	}
 
-			genUid(function(uid) {
+	if (max_access != null && max_access != "" && max_access != undefined) {
+		 if (Number(max_access) < 0 || !Number.isInteger(Number(max_access))) {
+			res.send({
+				result: FAILURE_CODE,
+				msg: "Invalid max access count!"
+			});
+			return
+		} else {
+			expired_after_count = Number(max_access);
+		}
+	}
+
+	genUid(function(uid) {
 
 				var new_memo = new Memo({
 					msg: msg,
 					_id: uid,
-					expired_on: expired_on
+					expired_on: expired_on,
+					max_access_count: expired_after_count
 				});
-				console.log("gen uid finished");
 				new_memo.save(function(err, _memo) {
 					if (err)
 						res.send(err);
@@ -74,27 +88,6 @@ exports.create_a_memo = function(req, res) {
 				});
 
 			}); 
-		}
-	} else {
-		genUid(function(uid) {
-
-			var new_memo = new Memo({
-				msg: msg,
-				_id: uid
-			});
-			new_memo.save(function(err, _memo) {
-				if (err)
-					res.send(err);
-				res.json({
-					result: SUCCESS_CODE,
-					msg : "Succeed",
-					memo: new memo(_memo)
-				});
-			});
-
-		}); 
-		
-	}
 };
 
 exports.read_a_memo = function(req, res) {
@@ -106,8 +99,28 @@ exports.read_a_memo = function(req, res) {
 				result: FAILURE_CODE,
 				msg: "The memo you query doesn't exist."
 			});
-		} else if (_memo.expired_on == null || undefined || "") {
-			// this memo doesn't has a expire date, it is ever-lasting
+		}
+
+		var valid_date = true, valid_count = true;
+		if (_memo.expired_on != null && (_memo.expired_on - new Date()) < 0) {
+			valid_date = false;
+		}
+
+		if (_memo.max_access_count != null && _memo.max_access_count != 0 && _memo.max_access_count <= _memo.access_count) {
+			valid_count = false;
+		}
+
+		if (!valid_date) {
+			res.json({
+					result: FAILURE_CODE,
+					msg: "The memo you are accessing has expired."
+				});
+		} else if (!valid_count) {
+			res.json({
+					result: FAILURE_CODE,
+					msg: "The memo you are accessing has reached maximum access count."
+				});
+		} else {
 			_memo.access_count++;
 			_memo.save();
 			res.json({
@@ -115,23 +128,7 @@ exports.read_a_memo = function(req, res) {
 				msg: "Succeed",
 				memo: new memo(_memo)
 			});
-		} else {
-			if ((_memo.expired_on - new Date()) < 0) {
-				res.json({
-					result: FAILURE_CODE,
-					msg: "The memo you are accessing has expired."
-				});
-			} else {
-				_memo.access_count++;
-				_memo.save();
-				res.json({
-					result: SUCCESS_CODE,
-					msg: "Succeed",
-					memo: new memo(_memo)
-				});
-			}
 		}
-		
 	});
 };
 

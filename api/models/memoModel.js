@@ -18,6 +18,11 @@ var MemoSchema = new Schema({
     expired_on: {
         type: Date
     },
+    max_access_count: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
     access_count: {
         type: Number,
         min: 0,
