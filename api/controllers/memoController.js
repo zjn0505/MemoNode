@@ -31,6 +31,7 @@ function memo(_memo) {
 exports.create_a_memo = function(req, res) {
 	var msg = req.body.msg;
 	var expired = req.body.expired_on;
+	var client = req.body.client;
 	var max_access = req.body.max_access_count;
 	var regex = /^([1-9][0-9]*)((min)|(hr)|(day))$/;
 	var expired_on = null;
@@ -80,25 +81,41 @@ exports.create_a_memo = function(req, res) {
 				new_memo.save(function(err, _memo) {
 					if (err)
 						res.send(err);
-					res.json({
-						result: SUCCESS_CODE,
-						msg : "Succeed",
-						memo: new memo(_memo)
-					});
+					if (client != null && client == 'web') {
+						res.send("<p>"+_memo._id+"</p>")
+					} else {
+						res.json({
+							result: SUCCESS_CODE,
+							msg : "Succeed",
+							memo: new memo(_memo)
+						});
+					}
+					return
 				});
 
 			}); 
 };
 
 exports.read_a_memo = function(req, res) {
-	Memo.findOne({'_id' : req.params.memoId}, function(err, _memo) {
+	var client = req.query.client;
+	var id = req.query.memoId
+	if (req.params.memoId != null) {
+		id = req.params.memoId
+	}
+	var redirect = false
+	if (id != null && id.endsWith('-')) {
+		id = id.substring(0, id.length-1)
+		redirect = true
+	}
+	
+
+	
+	Memo.findOne({'_id' : id}, function(err, _memo) {
 		if (err)
 			res.send(err);
 		if (_memo == null) {
-			res.json({
-				result: FAILURE_CODE,
-				msg: "The memo you query doesn't exist."
-			});
+			handleError(res, client, "The memo you query doesn't exist.")
+			return;
 		}
 
 		var valid_date = true, valid_count = true;
@@ -111,25 +128,45 @@ exports.read_a_memo = function(req, res) {
 		}
 
 		if (!valid_date) {
-			res.json({
-					result: FAILURE_CODE,
-					msg: "The memo you are accessing has expired."
-				});
+			handleError(res, client, "The memo you are accessing has expired.")
+			return;
 		} else if (!valid_count) {
-			res.json({
-					result: FAILURE_CODE,
-					msg: "The memo you are accessing has reached maximum access count."
-				});
+			handleError(res, client, "The memo you are accessing has reached maximum access count.")
+			return;
 		} else {
 			_memo.access_count++;
 			_memo.save();
-			res.json({
-				result: SUCCESS_CODE,
-				msg: "Succeed",
-				memo: new memo(_memo)
-			});
+			if (client != null && client == "web") {
+				if (req.query.memoId.endsWith("-")) {
+					res.redirect(_memo.msg)
+				} else {
+					res.send(_memo.msg)
+				}
+			} else {
+				res.json({
+					result: SUCCESS_CODE,
+					msg: "Succeed",
+					memo: new memo(_memo)
+				});
+			}
+			return;
 		}
 	});
 };
+
+function handleError(res, client, msg) {
+	if (client != null && client == "web") {
+		res.send(msg)
+	} else {
+		res.json({
+			result: FAILURE_CODE,
+			msg: msg
+		});
+	}
+}
+
+exports.web_portal = function(req, res) {
+	res.sendFile('web_portal.html', { root: './html' })
+}
 
 

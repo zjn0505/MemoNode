@@ -4,9 +4,15 @@ module.exports = function(app) {
 
 	// memo Routes
 	app.route('/memo')
-	.post(memoReqs.create_a_memo);
-
-
+	.post(memoReqs.create_a_memo)
+	.get(memoReqs.read_a_memo)
+	
 	app.route('/memo/:memoId')
 	.get(memoReqs.read_a_memo)
+	
+	app.route('/memo_web/:memoId')
+	.get(memoReqs.read_a_memo)
+	
+	app.route('/memo_web')
+	.get(memoReqs.web_portal)
 };
