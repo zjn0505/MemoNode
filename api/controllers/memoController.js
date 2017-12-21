@@ -101,13 +101,17 @@ exports.read_a_memo = function(req, res) {
 	var id = req.query.memoId
 	if (req.params.memoId != null) {
 		id = req.params.memoId
+		client = 'web'
 	}
 	var redirect = false
-	if (id != null && id.endsWith('-')) {
+	if (id != null && id != undefined && id.endsWith('-')) {
 		id = id.substring(0, id.length-1)
 		redirect = true
 	}
-	
+        if (id == null || id == undefined) {
+		res.sendFile('web_portal.html', { root: './html' })
+		return
+	}	
 
 	
 	Memo.findOne({'_id' : id}, function(err, _memo) {
@@ -137,7 +141,7 @@ exports.read_a_memo = function(req, res) {
 			_memo.access_count++;
 			_memo.save();
 			if (client != null && client == "web") {
-				if (req.query.memoId.endsWith("-")) {
+				if (redirect) {
 					res.redirect(_memo.msg)
 				} else {
 					res.send(_memo.msg)
