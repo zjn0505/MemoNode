@@ -109,7 +109,7 @@ exports.read_a_memo = function(req, res) {
 		redirect = true
 	}
         if (id == null || id == undefined) {
-		res.sendFile('web_portal.html', { root: './html' })
+		res.sendFile('web_portal.html', { root: './public/memo' })
 		return
 	}	
 
@@ -168,9 +168,3 @@ function handleError(res, client, msg) {
 		});
 	}
 }
-
-exports.web_portal = function(req, res) {
-	res.sendFile('web_portal.html', { root: './html' })
-}
-
-
