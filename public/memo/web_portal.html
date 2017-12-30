@@ -14,61 +14,10 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <script>
-    function postMemo(oFormElement) {
-      var http = new createCORSRequest(oFormElement.method, oFormElement.action);
-      http.open(oFormElement.method, oFormElement.action, true);
-      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      http.onreadystatechange = function() {
-        if(http.readyState == 4 && http.status == 200) {
-            var json = JSON.parse(http.response);
-            var alertSuccess = document.getElementById("push_success");
-            alertSuccess.innerHTML = "<strong>Success!</strong> You have created a memo with id <strong>"+json.memo._id+"</strong>.";
-            alertSuccess.style.display = "inherit"
-
-        }
-      }
-      http.onload = function () {
-          // do something to response
-          console.log(this.responseText);
-      };
-      var data = new FormData(oFormElement);
-      http.send(urlencodeFormData(data));
-      return false;
-    }
-
-    function createCORSRequest(method, url) {
-      var xhr = new XMLHttpRequest();
-      if ("withCredentials" in xhr) {
-        // XHR for Chrome/Firefox/Opera/Safari.
-        xhr.open(method, url, true);
-      } else if (typeof XDomainRequest != "undefined") {
-        // XDomainRequest for IE.
-        xhr = new XDomainRequest();
-        xhr.open(method, url);
-      } else {
-        // CORS not supported.
-        xhr = null;
-        console.log("not support CORS");
-      }
-      return xhr;
-    }
-
-    function urlencodeFormData(fd){
-    var s = '';
-    function encode(s){ return encodeURIComponent(s).replace(/%20/g,'+'); }
-      for(var pair of fd.entries()){
-          if(typeof pair[1]=='string'){
-              s += (s?'&':'') + encode(pair[0])+'='+encode(pair[1]);
-          }
-      }
-      return s;
-    }
-
-  </script>
+  <script src="./script/Autolinker.min.js"></script>
+  <script src="./script/main.js"></script>
   </head>
-  <body>
-
+  <body onload="rebuildTable()">
   <div class="container-fluid">
     <div class="row">
       <div class="col-xs-2 col-sm-1" style="width: 60px" >
@@ -83,7 +32,6 @@
       </div>
     </div>
   </div>
- 
   <div class="tab-content">
     <div id="pullsh" class="tab-pane fade in active">
       <div class="container">
@@ -101,26 +49,62 @@
       </div>
       <div class="container">
         <h1 id="memoId">Read a memo</h1>
-        <form name="create_memo" method="get" enctype="multipart/x-www-form-urlencoded" action="https://api.jienan.xyz/memo">
+        <form name="create_memo" method="get" onsubmit="return readMemo(this)" action="https://api.jienan.xyz/memo" target="dummyframe">
         <!-- <textarea name="memoId" rows="2" style="resize: none"></textarea><br> -->
         <input type="text" name="memoId" class="form-control" style="width:100px" /> 
-        <input type="hidden" name="client" value="web" /> 
         <input type="submit" value="Read" /></form>
       </div>
-      <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
+
+	  <!-- Modal -->
+	  <div class="modal fade in" id="myModal" role="dialog">
+	    <div class="modal-dialog">
+	    
+	      <!-- Modal content-->
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title" id="modal-title">Memo Id :</h4>
+	        </div>
+	        <div class="modal-body" id="modal-content">
+	          <p>Some text in the modal.</p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="copyToClipboard('#modal-content')">Copy & Close</button>
+	        </div>
+	      </div>
+	      
+	    </div>
+	  </div>
+      <!-- all nasties hiding here -->
+      <button type="button" id="myBtn" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="display: none">Open Modal</button>
+      <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe" style="display: none"></iframe>
     </div>
     <div id="history" class="tab-pane fade">
-    <div class="container">
-      <h3>Menu 1</h3>
-      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
+      <div class="container">
+        <table class="table table-hover" id="table-his">
+        	<thead>
+        	  <tr>
+              <th style="width: 25%">Memo</th>
+          	  <th style="width: 75%">Content</th>
+            </tr>
+      	</thead>
+      	<tbody>
+  	    </tbody>
+        </table>	
+      </div>
     </div>
     <div id="about" class="tab-pane fade">
-      <h3>Menu 2</h3>
-      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+      <div class="container">
+        <br>
+        <p>
+          Pullsh is a tool to help you create and share text with short id between devices. <br>
+          It is available on <a href="https://play.google.com/store/apps/details?id=xyz.jienan.pushpull">Android</a>, <a href="https://pullsh.me">pullsh.me</a>, and <a href="https://chrome.google.com/webstore/detail/pullsh/efinljejnfeaongopbnijppjolghpook">Chrome Extension</a>.
+        </p>
+        <p>
+        </p>
+      </div>
     </div>
   </div>
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
