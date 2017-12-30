@@ -29,8 +29,8 @@ function readMemo(oFormElement) {
         if (json.result == 200) {
           var modal = document.getElementById("myModal");
           modal.style.display = "block";
-          var modelContent = document.getElementById("modal-content");
-          modelContent.innerHTML = processText(json.memo.msg);
+          $('#modal-title').html("Memo Id : <strong>" + json.memo._id + "</strong>");
+          $('#modal-content').html(processText(json.memo.msg));
           $('#myBtn').click();
           saveToHistory(json);
         }
