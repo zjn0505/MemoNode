@@ -100,6 +100,9 @@ function rebuildTable() {
       var cellContent = row.insertCell(1);
       cellId.innerHTML = "<span style='font-family: monaco, Consolas, monospace;'><a href='https://pullsh.me/" + json[key].memo._id + "'>" + json[key].memo._id + "</a></span>";
       cellContent.innerHTML = processText(json[key].memo.msg);
+      cellContent.addEventListener('click', function(e) {
+        copyToClipboard(e.currentTarget);
+      });
       
     }
   }
