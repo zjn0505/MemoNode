@@ -57,7 +57,7 @@
         <h1 id="memoId">Read a memo</h1>
         <form name="read_memo" method="get" onsubmit="return readMemo(this)" action="https://api.jienan.xyz/memo" target="dummyframe">
         <!-- <textarea name="memoId" rows="2" style="resize: none"></textarea><br> -->
-        <input type="text" name="memoId" class="form-control" style="width:100px; font-family: monaco, Consolas, 'Lucida Console', monospace;" /> 
+        <input type="text" name="memoId" class="form-control" style="width: 100px; font-family: monaco, Consolas, 'Lucida Console', monospace;" /> 
         <input type="submit" value="Read" /></form>
       </div>
 
@@ -75,7 +75,7 @@
 	          <p>Some text in the modal.</p>
 	        </div>
 	        <div class="modal-footer">
-	          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="copyToClipboard('#modal-content')">Copy & Close</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="copyToClipboard($('#modal-content').text(), '')">Copy & Close</button>
 	        </div>
 	      </div>
 	      
@@ -96,7 +96,7 @@
       	</thead>
       	<tbody>
   	    </tbody>
-        </table>	
+        </table>
       </div>
     </div>
     <div id="about" class="tab-pane fade">
