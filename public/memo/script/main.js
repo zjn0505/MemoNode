@@ -30,7 +30,7 @@ function readMemo(oFormElement) {
           var modal = document.getElementById("myModal");
           modal.style.display = "block";
           $('#modal-title').html("Memo Id : <strong>" + json.memo._id + "</strong>");
-          $('#modal-content').html(processText(json.memo.msg));
+          $('#modal-content').html("<p>"+processText(json.memo.msg)+"</p>");
           $('#myBtn').click();
           saveToHistory(json);
         }
