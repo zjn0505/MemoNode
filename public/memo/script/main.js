@@ -8,7 +8,7 @@ function postMemo(oFormElement) {
         if (json.result == 200) {
           var alertSuccess = document.getElementById("push_success");
           alertSuccess.innerHTML = "<strong>Success!</strong> You have created a memo with id <span style='font-family: monaco, Consolas, monospace;'><a target='_blank' href='https://pullsh.me/"+json.memo._id+"'>"+json.memo._id+"</a></span>.";
-          alertSuccess.style.display = "inherit"
+          alertSuccess.style.display = "inherit";
           alertSuccess.addEventListener('click', function(e) {
             var target = e.target || e.srcElement;
             if (target.tagName != "A") {
@@ -53,14 +53,16 @@ function copyToClipboard(text, toast) {
   $temp.val(text).select();
   document.execCommand("copy");
   $temp.remove();
-  $.toast({
-    text: toast,
-    hideAfter: 1000,
-    loader:false,
-    allowToastClose: false,
-    position: 'bottom-center',
-    textAlign:'center'
-  });
+  if (toast != null && toast != undefined && toast != "") {
+    $.toast({
+      text: toast,
+      hideAfter: 1000,
+      loader:false,
+      allowToastClose: false,
+      position: 'bottom-center',
+      textAlign:'center'
+    });
+  }
 }
 
 function createCORSRequest(method, url) {
