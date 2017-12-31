@@ -7,7 +7,7 @@ function postMemo(oFormElement) {
         var json = JSON.parse(http.response);
         if (json.result == 200) {
           var alertSuccess = document.getElementById("push_success");
-          alertSuccess.innerHTML = "<strong>Success!</strong> You have created a memo with id <span style='font-family: Monaco;'><a href='https://pullsh.me/"+json.memo._id+"'>"+json.memo._id+"</a></span>.";
+          alertSuccess.innerHTML = "<strong>Success!</strong> You have created a memo with id <span style='font-family: monaco, Consolas;'><a href='https://pullsh.me/"+json.memo._id+"'>"+json.memo._id+"</a></span>.";
           alertSuccess.style.display = "inherit"
           saveToHistory(json);
         }
@@ -29,7 +29,7 @@ function readMemo(oFormElement) {
         if (json.result == 200) {
           var modal = document.getElementById("myModal");
           modal.style.display = "block";
-          $('#modal-title').html("Memo Id : <span style='font-family: Monaco;'><strong>" + json.memo._id + "</strong></span>");
+          $('#modal-title').html("Memo Id : <span style='font-family: monaco, Consolas;'><strong>" + json.memo._id + "</strong></span>");
           $('#modal-content').html("<p>"+processText(json.memo.msg)+"</p>");
           $('#myBtn').click();
           saveToHistory(json);
@@ -98,7 +98,7 @@ function rebuildTable() {
       var row = document.getElementById("table-his").getElementsByTagName("tbody")[0].insertRow(0);
       var cellId = row.insertCell(0);
       var cellContent = row.insertCell(1);
-      cellId.innerHTML = "<span style='font-family: Monaco;'><a href='https://pullsh.me/" + json[key].memo._id + "'>" + json[key].memo._id + "</a></span>";
+      cellId.innerHTML = "<span style='font-family: monaco, Consolas;'><a href='https://pullsh.me/" + json[key].memo._id + "'>" + json[key].memo._id + "</a></span>";
       cellContent.innerHTML = processText(json[key].memo.msg);
       
     }
