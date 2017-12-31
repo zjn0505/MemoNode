@@ -7,8 +7,15 @@ function postMemo(oFormElement) {
         var json = JSON.parse(http.response);
         if (json.result == 200) {
           var alertSuccess = document.getElementById("push_success");
-          alertSuccess.innerHTML = "<strong>Success!</strong> You have created a memo with id <span style='font-family: monaco, Consolas, monospace;'><a href='https://pullsh.me/"+json.memo._id+"'>"+json.memo._id+"</a></span>.";
+          alertSuccess.innerHTML = "<strong>Success!</strong> You have created a memo with id <span style='font-family: monaco, Consolas, monospace;'><a target='_blank' href='https://pullsh.me/"+json.memo._id+"'>"+json.memo._id+"</a></span>.";
           alertSuccess.style.display = "inherit"
+          alertSuccess.addEventListener('click', function(e) {
+            var target = e.target || e.srcElement;
+            if (target.tagName != "A") {
+              alertSuccess.style.display = "none";
+              copyToClipboard("https://pullsh.me/" + json.memo._id, "Memo link copied!");
+            }
+          });
           saveToHistory(json);
         }
     }
@@ -40,12 +47,20 @@ function readMemo(oFormElement) {
   return false;
 }
 
-function copyToClipboard(element) {
+function copyToClipboard(text, toast) {
   var $temp = $("<input>");
   $("body").append($temp);
-  $temp.val($(element).text()).select();
+  $temp.val(text).select();
   document.execCommand("copy");
   $temp.remove();
+  $.toast({
+    text: toast,
+    hideAfter: 1000,
+    loader:false,
+    allowToastClose: false,
+    position: 'bottom-center',
+    textAlign:'center'
+  });
 }
 
 function createCORSRequest(method, url) {
@@ -101,9 +116,11 @@ function rebuildTable() {
       cellId.innerHTML = "<span style='font-family: monaco, Consolas, monospace;'><a href='https://pullsh.me/" + json[key].memo._id + "'>" + json[key].memo._id + "</a></span>";
       cellContent.innerHTML = processText(json[key].memo.msg);
       cellContent.addEventListener('click', function(e) {
-        copyToClipboard(e.currentTarget);
+        var target = e.target || e.srcElement;
+        if (target.tagName != "A") {
+          copyToClipboard(e.currentTarget.textContent, "Memo copied!");
+        }
       });
-      
     }
   }
 }
