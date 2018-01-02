@@ -1,4 +1,7 @@
 function postMemo(oFormElement) {
+  if (oFormElement.elements.msg.value == "") {
+	  return false;
+  }
   var http = new createCORSRequest(oFormElement.method, oFormElement.action);
   http.open(oFormElement.method, oFormElement.action, true);
   http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -26,6 +29,9 @@ function postMemo(oFormElement) {
 }
 
 function readMemo(oFormElement) {
+  if (oFormElement.elements.memoId.value == "") {
+	return false;
+  }
   var host = oFormElement.action + "?memoId=" + oFormElement[0].value;
   var http = new createCORSRequest(oFormElement.method, host);
   http.open(oFormElement.method, host, true);
