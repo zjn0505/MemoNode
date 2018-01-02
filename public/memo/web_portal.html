@@ -7,8 +7,8 @@
 	<meta name="theme-color" content="#26A599">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="shortcut icon" href="./icon/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="./icon/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./icon/ic_pullsh.png" type="image/x-icon">
+    <link rel="icon" href="./icon/ic_pullsh.png" type="image/x-icon">
 	<link rel="apple-touch-icon" href="./icon/ic_pullsh_192.png">
 	<link rel="icon" sizes="192x192" href="./icon/ic_pullsh_192.png">
     <link href="./css/jquery.toast.min.css" rel="stylesheet" type="text/css">
@@ -22,6 +22,9 @@
     .modal-body p {
       word-wrap: break-word;
     }
+	.btn-primary {background-color:#26A599; border-color:#FFF;}
+	.btn-primary:hover {background-color:#37B699;border-color:#FFF;}
+	.btn-primary:active, .btn-primary:focus {background-color:#159499 !important;border-color:#FFF !important;}
     </style>
 	<title>Pullsh - short id memo</title>
     <script src="./script/Autolinker.min.js"></script>
@@ -49,9 +52,8 @@
         <div class="row">
           <div class="col-xs-12 col-10">
             <form name="create_memo" method="post" onsubmit="return postMemo(this)" action="https://api.jienan.xyz/memo" target="dummyframe">
-            <textarea id="push_input" name="msg" rows="10" style="width:100%; resize:none;"></textarea>
-            <br />
-            <input type="submit" value="Create" /></form>
+            <textarea id="push_input" name="msg" rows="10" class="form-control" style="width:100%; resize:none;"></textarea>
+            <input type="submit" value="Create" style="margin-top: 5px;" class="btn btn-primary"/></form>
           </div>
         </div>
         <p>
@@ -62,7 +64,7 @@
         <form name="read_memo" method="get" onsubmit="return readMemo(this)" action="https://api.jienan.xyz/memo" target="dummyframe">
         <!-- <textarea name="memoId" rows="2" style="resize: none"></textarea><br> -->
         <input type="text" name="memoId" class="form-control" style="width: 100px; font-family: monaco, Consolas, 'Lucida Console', monospace;" /> 
-        <input type="submit" value="Read" /></form>
+        <input type="submit" value="Read" style="margin-top: 5px;" class="btn btn-primary"/></form>
       </div>
 
 	  <!-- Modal -->
