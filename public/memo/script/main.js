@@ -6,7 +6,8 @@ function postMemo(oFormElement) {
   http.open(oFormElement.method, oFormElement.action, true);
   http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   http.onreadystatechange = function() {
-    if(http.readyState == 4 && http.status == 200) {
+    if(http.readyState == 4) {
+      if (http.status == 200) {
         var json = JSON.parse(http.response);
         if (json.result == 200) {
           var alertSuccess = document.getElementById("push_success");
@@ -23,10 +24,18 @@ function postMemo(oFormElement) {
           });
           saveToHistory(json);
         }
+      }
+      $("#pleaseWaitDialog").modal('hide');
     }
+  }
+  http.ontimeout = function(e) {
+    $("#pleaseWaitDialog").modal('hide');
+    // show error here
   }
   var data = new FormData(oFormElement);
   http.send(urlencodeFormData(data));
+  $("#pleaseWaitDialog").modal();
+  $("#progress_header").text("Creating a Push memo");
   return false;
 }
 
@@ -39,7 +48,8 @@ function readMemo(oFormElement) {
   http.open(oFormElement.method, host, true);
   http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   http.onreadystatechange = function() {
-    if(http.readyState == 4 && http.status == 200) {
+    if(http.readyState == 4) {
+      if (http.status == 200) {
         var json = JSON.parse(http.response);
         if (json.result == 200) {
           var modal = document.getElementById("myModal");
@@ -49,9 +59,17 @@ function readMemo(oFormElement) {
           $('#myBtn').click();
           saveToHistory(json);
         }
+      }
+      $("#pleaseWaitDialog").modal('hide');
     }
   }
   http.send();
+  http.ontimeout = function(e) {
+    $("#pleaseWaitDialog").modal('hide');
+    // show error here
+  }
+  $("#pleaseWaitDialog").modal();
+  $("#progress_header").text("Pulling a memo");
   return false;
 }
 

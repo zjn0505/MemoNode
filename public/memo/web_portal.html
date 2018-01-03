@@ -67,26 +67,44 @@
         <input type="submit" value="Read" style="margin-top: 5px;" class="btn btn-primary"/></form>
       </div>
 
-	  <!-- Modal -->
-	  <div class="modal fade in" id="myModal" role="dialog">
-	    <div class="modal-dialog">
-	    
-	      <!-- Modal content-->
-	      <div class="modal-content">
-	        <div class="modal-header">
-	          <button type="button" class="close" data-dismiss="modal">&times;</button>
-	          <h4 class="modal-title" id="modal-title"></h4>
-	        </div>
-	        <div class="modal-body" id="modal-content">
-	          <p>Some text in the modal.</p>
-	        </div>
-	        <div class="modal-footer">
-	          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="copyToClipboard($('#modal-content').text(), '')">Copy & Close</button>
-	        </div>
-	      </div>
-	      
-	    </div>
-	  </div>
+  	  <!-- Modal -->
+  	  <div class="modal fade in" id="myModal" role="dialog">
+  	    <div class="modal-dialog">
+  	    
+  	      <!-- Modal content-->
+  	      <div class="modal-content">
+  	        <div class="modal-header">
+  	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+  	          <h4 class="modal-title" id="modal-title"></h4>
+  	        </div>
+  	        <div class="modal-body" id="modal-content">
+  	          <p>Some text in the modal.</p>
+  	        </div>
+  	        <div class="modal-footer">
+  	          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="copyToClipboard($('#modal-content').text(), '')">Copy & Close</button>
+  	        </div>
+  	      </div>
+  	      
+  	    </div>
+  	  </div>
+      <!-- Progress bar -->
+      <div class="modal" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" style="margin-top: 200px">
+        
+          <!-- Modal content-->
+          <div class="modal-content" style="max-width:300px; width: 80%; margin: 0 auto">
+            <div class="modal-header" style="padding: 5px 0px 5px 0px;">
+              <h4 style="text-align:center" id="progress_header"></h4>
+            </div>
+            <div class="modal-body">
+              <div class="progress" style="margin-bottom: 10px; margin-top: 10px;">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" style="width:100%">
+                </div>
+              </div>
+             </div>
+          </div> 
+        </div>
+      </div>
       <!-- all nasties hiding here -->
       <button type="button" id="myBtn" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="display: none">Open Modal</button>
       <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe" style="display: none"></iframe>
