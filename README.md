@@ -9,9 +9,9 @@ Chrome extension, available on [Chrome Webstore](https://chrome.google.com/webst
 
 ## Api list
 
-- [Create a memo](#create_a_memo)
-- [Read a memo](#read_a_memo)
-
+- [Create a memo](#create-a-memo)
+- [Read a memo](#read-a-memo)
+- [Read a memo from web](#read-a-memo-from-web)
 ---
 ### Create a memo
 
