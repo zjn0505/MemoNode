@@ -9,9 +9,10 @@
   "author": "Jienan Zhang",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^1.0.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "mongoose": "^4.12.4"
+    "mongoose": "^4.12.4",
+    "nanoid": "^1.0.0",
+    "swagger-stats": "^0.95.6"
   }
 }
