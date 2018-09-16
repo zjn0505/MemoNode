@@ -1,5 +1,6 @@
 var config = require('config');
 var express = require('express'),
+    debug = require('debug')('server'),
     app = express(),
     port = config.port,
     mongoose = require('mongoose'),
