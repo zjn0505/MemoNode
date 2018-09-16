@@ -10,8 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "config": "^2.0.1",
     "express": "^4.16.2",
-    "mongoose": "^4.12.4",
+    "mongoose": "^5.2.15",
     "nanoid": "^1.0.0",
     "swagger-stats": "^0.95.6"
   }
