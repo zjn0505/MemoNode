@@ -37,8 +37,8 @@ app.use(function (req, res, next) {
         res.setHeader("Expires", new Date(Date.now() + 2592000000).toUTCString());
     }
     if (req.url.indexOf("/script/main.js") === 5) {
-        res.setHeader("Cache-Control", "public, max-age=3600");
-        res.setHeader("Expires", new Date(Date.now() + 360000).toUTCString());
+        res.setHeader("Cache-Control", "public, max-age=86400");
+        res.setHeader("Expires", new Date(Date.now() + 8640000).toUTCString());
     }
     next();
 });
