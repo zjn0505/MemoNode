@@ -10,11 +10,14 @@ var nanoid = require('nanoid/generate');
 
 function genUid(callback) {
 	var uid = nanoid("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", 4);
+	console.log("Uid gen " + uid)
 	Memo.findOne({'_id' : uid}, function(err, memo) {
 		if (err == null && memo == null) {
+			console.log("Fresh uid")
 			callback(uid);
 			return;
 		}
+		console.log("Duplicated Uid")
 		genUid(callback)
 	});	
 }
@@ -30,6 +33,9 @@ function memo(_memo) {
 
 exports.create_a_memo = function(req, res) {
 	var msg = req.body.msg;
+	if (!msg) {
+		return;
+	}
 	var expired = req.body.expired_on;
 	var client = req.body.client;
 	var max_access = req.body.max_access_count;
@@ -71,7 +77,7 @@ exports.create_a_memo = function(req, res) {
 	}
 
 	genUid(function(uid) {
-
+				console.log("Apply uid for new memo " + uid)
 				var new_memo = new Memo({
 					msg: msg,
 					_id: uid,
