@@ -150,7 +150,7 @@ exports.read_a_memo = function(req, res) {
 				if (redirect) {
 					res.redirect(_memo.msg)
 				} else {
-					res.send('<span style="white-space: pre-line">'+_memo.msg+'</span>')
+					res.send(_memo.msg)
 				}
 			} else {
 				res.json({
