@@ -58,6 +58,7 @@
           <div class="col-xs-12 col-10">
             <form name="create_memo" method="post" onsubmit="return postMemo(this)" action="https://api.jienan.xyz/memo" target="dummyframe">
             <textarea id="push_input" name="msg" rows="10" class="form-control" style="width:100%; resize:none;"></textarea>
+            <input type="checkbox" name="contact" value="1" style="display:none !important" tabindex="-1" autocomplete="off">
             <input type="submit" value="Create" style="margin-top: 5px;" class="btn btn-primary"/></form>
           </div>
         </div>
@@ -69,7 +70,9 @@
         <form name="read_memo" method="get" onsubmit="return readMemo(this)" action="https://api.jienan.xyz/memo" target="dummyframe">
         <!-- <textarea name="memoId" rows="2" style="resize: none"></textarea><br> -->
         <input type="text" name="memoId" class="form-control" style="width: 100px; font-family: monaco, Consolas, 'Lucida Console', monospace;" /> 
-        <input type="submit" value="Read" style="margin-top: 5px;" class="btn btn-primary"/></form>
+        <input type="checkbox" name="contact" value="1" style="display:none !important" tabindex="-1" autocomplete="off">
+        <input type="submit" value="Read" style="margin-top: 5px;" class="btn btn-primary"/>
+        </form>
       </div>
 
   	  <!-- Modal -->

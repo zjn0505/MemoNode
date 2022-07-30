@@ -38,6 +38,12 @@ exports.create_a_memo = function(req, res) {
 	}
 	var expired = req.body.expired_on;
 	var client = req.body.client;
+	var contact = req.body.contact
+	if (contact == 1) {
+		console.log("spam on create " + client, req.headers['x-forwarded-for'] || req.socket.remoteAddress)
+		res.send("OK");
+		return;
+	}
 	var max_access = req.body.max_access_count;
 	var regex = /^([1-9][0-9]*)((min)|(hr)|(day))$/;
 	var expired_on = null;
@@ -108,6 +114,12 @@ exports.read_a_memo = function(req, res) {
 	if (req.params.memoId != null) {
 		id = req.params.memoId
 		client = 'web'
+	}
+	var contact = req.body.contact
+	if (contact == 1) {
+		console.log("spam on read " + client, req.headers['x-forwarded-for'] || req.socket.remoteAddress)
+		res.send("OK");
+		return;
 	}
 	var redirect = false
 	if (id != null && id != undefined && id.endsWith('-')) {
