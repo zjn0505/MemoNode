@@ -21,8 +21,6 @@ if (config.has("swagger-stats")) {
         },
         authentication: true,
         sessionMaxAge: 900,
-        elasticsearchIndexPrefix: swaggerConfig.elasticsearchIndexPrefix,
-        elasticsearch: swaggerConfig.elasticsearch,
         onAuthenticate: function (req, username, password) {
             return ((username === swaggerConfig.username) && (password === swaggerConfig.password));
         }
